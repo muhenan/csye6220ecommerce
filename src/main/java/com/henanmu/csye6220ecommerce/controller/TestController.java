@@ -14,6 +14,6 @@ public class TestController {
     String testGet () {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String date = df.format(new Date());
-        return date;
+        return date + " working on front end";
     }
 }
