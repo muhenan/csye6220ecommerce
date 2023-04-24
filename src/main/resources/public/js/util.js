@@ -73,7 +73,7 @@ function addPromotion() {
         if (getCookie("user_role") !== "1") {
             alert("Only administrators have this permission");
         } else {
-            alert("Add Promotion");
+            window.open("add_promotion.html", '_self');
         }
     }
 }
