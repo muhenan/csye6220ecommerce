@@ -2,18 +2,22 @@ document.addEventListener('visibilitychange', account_status, false);
 account_status();
 
 function setCookie(name, value) {
-    document.cookie = name + "=" + value
+    document.cookie = name + "=" + value;
+    console.log(document.cookie);
 }
 
-//读取cookies
+//get cookies
 function getCookie(name) {
-    var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+    const cookiePairs = document.cookie.split('; ');
 
-    if (arr = document.cookie.match(reg))
+    for (let i = 0; i < cookiePairs.length; i++) {
+        const pair = cookiePairs[i].split('=');
+        if (decodeURIComponent(pair[0]) === name) {
+            return decodeURIComponent(pair[1]);
+        }
+    }
 
-        return unescape(arr[2]);
-    else
-        return null;
+    return null;
 }
 
 function account_status() {

@@ -1,6 +1,8 @@
 package com.henanmu.csye6220ecommerce.dao;
 
 import com.henanmu.csye6220ecommerce.pojo.Promotion;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,14 +16,29 @@ public class PromotionDAO extends DAO {
     }
 
     public Promotion getById(Integer pid) {
-        Promotion promotion = getSession().get(Promotion.class, pid);
+        Transaction transaction = null;
+        Promotion promotion = null;
+        try {
+            Session session = getSession();
+            transaction = session.beginTransaction();
+            promotion = session.get(Promotion.class, pid);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
+        getSession().evict(promotion);
         return promotion;
     }
 
     public List<Promotion> getByStatus(Integer status) {
+        begin();
         List<Promotion> promotions = getSession().createQuery("FROM Promotion WHERE status = :status")
                 .setParameter("status", status)
                 .list();
+        commit();
         return promotions;
     }
 
