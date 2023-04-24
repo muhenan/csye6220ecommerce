@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Promotion Item Page</title>
+  <link rel="stylesheet" type="text/css" href="css/promotion.css">
+  <link rel="stylesheet" type="text/css" href="css/header.css">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <link rel="script" href="js/util.js">
+</head>
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+
+  window.onload = function() {
+    var request = new Object();
+    request = GetRequest();
+    var id = request["id"];
+    var commodityId;
+    $.ajax({
+      type: 'GET',
+      url: 'http://localhost:8080/promotion/id/' + id,
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8'
+      },
+      success: function (data) {
+        console.log(data);
+        var name = data.promotionName;
+        $('#promotionName').html(name);
+        var promotionId = data.pid;
+        $('#promotionId').html(promotionId);
+        var originalPrice = data.originalPrice;
+        $('#originalPrice').html('$' + originalPrice);
+        var promotionalPrice = data.promotionalPrice;
+        $('#promotionalPrice').html('$' + promotionalPrice);
+        var availableStock = data.availableStock;
+        $('#availableStock').html('Stock: ' + availableStock);
+
+        $('#promotionDesc').html(data.commodity.description);
+
+        document.getElementById('preview_img').src = data.imageUrl;
+        commodityId = data.commodity.cid;
+        $.ajax({
+          type: 'GET',
+          url: 'http://localhost:8080/commodity/id/' + commodityId,
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8'
+          },
+          success: function (data) {
+            console.log(data);
+            $('#description').html(data.description);
+
+
+          },
+          error: function (data) {
+            alert("error: " + data);
+          }
+        });
+
+      },
+      error: function (data) {
+        alert("error: " + data);
+      }
+    });
+  };
+</script>
+<body>
+<header>
+  <ul>
+    <li><a href="login.html" id="account_action">Please login</a></li>
+    <li><a href="#" onclick="myOrder()">My Order</a></li>
+    <li><a href="#" onclick="myCart()">My Cart</a></li>
+    <li><a href="promotions.html">Menu</a></li>
+    <li><a href="#" onclick="addPromotion()">Add Promotion</a></li>
+    <li><a href="#" onclick="addCommodity()">Add Commodity</a></li>
+  </ul>
+</header>
+<main>
+  <div class="promotion-item-container">
+    <div class="promotion-image">
+      <img id="preview_img">
+    </div>
+    <div class="promotion-details">
+      <h1 id="promotionName">Promotion Name</h1>
+      <p id="promotionId" hidden></p>
+      <p id="promotionDesc">Promotion description goes here.</p>
+      <p>
+        <del id="originalPrice"></del><br/>
+        <p id="promotionalPrice"></p>
+      </p>
+      <div><p id="availableStock"></p></div>
+      <ul>
+        <li><a onclick="buyNow()">Buy Now</a></li>
+        <script type="text/javascript">
+          function buyNow() {
+            var obj = {};
+            obj["userId"] = getCookie("user_id");
+            obj["promotionId"] = document.getElementById('promotionId').innerHTML;
+            console.log(obj);
+            var jsonStr = JSON.stringify(obj);
+
+            $.ajax({
+              type: 'POST',
+              url: 'http://localhost:8080/order',
+              data: jsonStr,
+              headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                'mark': getCookie('mark')
+              },
+              statusCode: {
+                501: function() {
+                  alert("Sorry, the product you are interested sold out.");
+                }
+              },
+              success: function (order) {
+                window.location.href = "order2.html?orderNumber=" + order.oid;
+              },
+              error: function (data) {
+                console.log(data);
+                alert("error: " + data);
+              }
+            });
+          }
+        </script>
+        <li><a onclick="addToCart()">Add to Cart</a></li>
+        <script type="text/javascript">
+          function addToCart() {
+            var obj = {};
+            obj["userId"] = getCookie("user_id");
+            obj["promotionId"] = document.getElementById('promotionId').innerHTML;
+            console.log(obj);
+            var jsonStr = JSON.stringify(obj);
+
+            $.ajax({
+              type: 'POST',
+              url: 'http://localhost:8080/cart/add',
+              data: jsonStr,
+              headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                'mark': getCookie('mark')
+              },
+              success: function () {
+                alert("Added to Cart");
+              },
+              error: function (data) {
+                console.log(data);
+                alert("error: " + data);
+              }
+            });
+          }
+        </script>
+      </ul>
+    </div>
+  </div>
+</main>
+<script src="js/util.js"></script>
+</body>
+</html>

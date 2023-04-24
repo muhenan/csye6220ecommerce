@@ -1,0 +1,86 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    margin: 50px auto;
+    max-width: 800px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    text-align: center;
+}
+
+.cart-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+}
+
+.product-card {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    width: 100%;
+}
+
+.product-card img {
+    max-width: 100px;
+    margin-right: 20px;
+}
+
+.product-details h2 {
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+.product-details .price {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+.product-details .stock {
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+.product-actions {
+    flex-basis: 25%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    list-style-type: none;
+}
+
+.product-actions li:not(:last-child) {
+    margin-right: 10px
+}
+
+.product-actions li a {
+    display: block;
+    padding: 10px;
+    background-color: #333;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.product-actions li a:hover {
+    background-color: #444;
+}
+
+.product-actions-container {
+    margin-left: 8rem;
+}

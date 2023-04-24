@@ -17,5 +17,6 @@
         <mapping class="com.henanmu.csye6220ecommerce.pojo.Commodity"/>
         <mapping class="com.henanmu.csye6220ecommerce.pojo.Promotion"/>
         <mapping class="com.henanmu.csye6220ecommerce.pojo.Order"/>
+        <mapping class="com.henanmu.csye6220ecommerce.pojo.Cart"/>
     </session-factory>
 </hibernate-configuration>
