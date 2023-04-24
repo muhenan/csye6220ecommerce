@@ -85,7 +85,7 @@ function addCommodity() {
         if (getCookie("user_role") !== "1") {
             alert("Only administrators have this permission");
         } else {
-            alert("Add Commodity");
+            window.open("add_commodity.html", '_self');
         }
     }
 }
