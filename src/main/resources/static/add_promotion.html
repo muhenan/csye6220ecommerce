@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Promotion</title>
+  <link rel="stylesheet" href="css/add_promotion.css">
+  <link rel="stylesheet" type="text/css" href="css/header.css">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+</head>
+<body>
+<header>
+  <ul>
+    <li><a href="login.html" id="account_action">Please login</a></li>
+    <li><a href="#" onclick="myOrder()">My Order</a></li>
+    <li><a href="#" onclick="myCart()">My Cart</a></li>
+    <li><a href="promotions.html">Menu</a></li>
+    <li><a href="#" onclick="addPromotion()">Add Promotion</a></li>
+    <li><a href="#" onclick="addCommodity()">Add Commodity</a></li>
+  </ul>
+</header>
+
+<h1>Add Promotion</h1>
+<form>
+  <div>
+    <label for="promotionName">Promotion Name:</label>
+    <input type="text" id="promotionName" name="promotionName" required>
+  </div>
+  <div>
+    <label for="originalPrice">Original Price:</label>
+    <input type="number" id="originalPrice" name="originalPrice" required>
+  </div>
+  <div>
+    <label for="promotionalPrice">Promotional Price:</label>
+    <input type="number" id="promotionalPrice" name="promotionalPrice" required>
+  </div>
+  <div>
+    <label for="startTime">Start Time:</label>
+    <input type="datetime-local" id="startTime" name="startTime" required>
+  </div>
+  <div>
+    <label for="endTime">End Time:</label>
+    <input type="datetime-local" id="endTime" name="endTime" required>
+  </div>
+  <div>
+    <label for="totalStock">Total Stock:</label>
+    <input type="number" id="totalStock" name="totalStock" required>
+  </div>
+  <div>
+    <label for="imageUrl">Image URL:</label>
+    <input type="text" id="imageUrl" name="imageUrl" required>
+  </div>
+  <div>
+    <label for="commodityId">Commodity ID:</label>
+    <input type="number" id="commodityId" name="commodityId" required>
+  </div>
+  <button type="button" id="add-promotion-btn">Submit</button>
+</form>
+<script src="js/util.js"></script>
+<script type="text/javascript">
+  function addPromotionInThisPage() {
+    console.log(addPromotionInThisPage)
+    // Get the input values from the HTML form
+    var promotionName = document.getElementById('promotionName').value;
+    var originalPrice = document.getElementById('originalPrice').value;
+    var promotionalPrice = document.getElementById('promotionalPrice').value;
+    var startTime = document.getElementById('startTime').value;
+    var endTime = document.getElementById('endTime').value;
+    var totalStock = document.getElementById('totalStock').value;
+    var imageUrl = document.getElementById('imageUrl').value;
+    var commodityId = document.getElementById('commodityId').value;
+
+    // Create the promotion object
+    var promotion = {
+      "promotionName": promotionName,
+      "originalPrice": originalPrice,
+      "promotionalPrice": promotionalPrice,
+      "startTime": startTime,
+      "endTime": endTime,
+      "totalStock": totalStock,
+      "imageUrl": imageUrl,
+      "commodityId": commodityId
+    };
+
+    console.log(promotion);
+
+    // Send the AJAX request to add the promotion
+    $.ajax({
+      type: 'POST',
+      url: 'http://localhost:8080/promotion',
+      contentType: 'application/json',
+      data: JSON.stringify(promotion),
+      success: function(response) {
+        alert("Promotion added successfully!");
+      },
+      error: function(xhr, textStatus, errorThrown) {
+        var response = JSON.parse(xhr.responseText);
+        alert(response.message);
+      }
+    });
+  }
+
+  document.getElementById('add-promotion-btn').addEventListener('click', addPromotionInThisPage);
+
+</script>
+</body>
+</html>

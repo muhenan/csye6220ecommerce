@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product Page</title>
+    <link rel="stylesheet" type="text/css" href="css/promotions.css">
+    <link rel="stylesheet" type="text/css" href="css/header.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <link rel="script" href="js/util.js">
+</head>
+<script type="text/javascript">
+    window.onload = function () {
+        var activate_status = 1;
+        $.ajax({
+            type: 'GET',
+            url: 'http://localhost:8080/promotion/status/' + activate_status,
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8'
+            },
+            success: function (list) {
+                $.each(list, function (key, promotion) {
+                    console.log(promotion);
+                    cover = promotion.imageUrl;
+                    $('.product-container').append("<div class=\"product-card\">\
+                    <img src='" + cover +"'>\
+                    <h2>" + promotion.promotionName + "</h2>\
+                    <p><del>" + promotion.originalPrice + "$</del><br/> Now:" +
+                    promotion.promotionalPrice + "$</p><p>Sold: \
+                    " + (promotion.totalStock - promotion.availableStock) + "| Stock:" + promotion.availableStock + " \
+                     <a href='" + "promotion_item2.html?id=" + promotion.pid + "'>Details</a> </div>" + "\
+                    </div>");
+                })
+            }
+        });
+    }
+</script>
+<body>
+<header>
+    <ul>
+        <li><a href="login.html" id="account_action">Please login</a></li>
+        <li><a href="#" onclick="myOrder()">My Order</a></li>
+        <li><a href="#" onclick="myCart()">My Cart</a></li>
+        <li><a href="promotions.html">Menu</a></li>
+        <li><a href="#" onclick="addPromotion()">Add Promotion</a></li>
+        <li><a href="#" onclick="addCommodity()">Add Commodity</a></li>
+    </ul>
+</header>
+<main>
+    <h1>Promotions</h1>
+    <div class="product-container">
+    </div>
+</main>
+<script src="js/util.js"></script>
+</body>
+</html>

@@ -6,6 +6,7 @@ import com.henanmu.csye6220ecommerce.dao.UserDAO;
 import com.henanmu.csye6220ecommerce.pojo.Order;
 import com.henanmu.csye6220ecommerce.pojo.Promotion;
 import com.henanmu.csye6220ecommerce.pojo.User;
+import com.henanmu.csye6220ecommerce.util.MessageModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -73,6 +74,10 @@ public class OrderController {
         if (existingOrder == null) {
             return ResponseEntity.notFound().build();
         }
+        if (existingOrder.getOrderStatus() != 0) {
+            MessageModel messageModel = MessageModel.create("This order is already paid or canceled");
+            return ResponseEntity.badRequest().body(messageModel);
+        }
         if (!promotionDAO.deductStock(existingOrder.getPromotion().getPid())) {
             return ResponseEntity.badRequest().body("No available stock");
         }
@@ -87,6 +92,10 @@ public class OrderController {
         Order existingOrder = orderDAO.getOrderById(id);
         if (existingOrder == null) {
             return ResponseEntity.notFound().build();
+        }
+        if (existingOrder.getOrderStatus() != 0) {
+            MessageModel messageModel = MessageModel.create("This order is already paid or canceled");
+            return ResponseEntity.badRequest().body(messageModel);
         }
         if (!promotionDAO.revertStock(existingOrder.getPromotion().getPid())) {
             return ResponseEntity.badRequest().body("Your order already expired");

@@ -14,8 +14,13 @@ public class User {
 
     private Integer role; // 0 -> customer, 1 -> admin
 
-    @ManyToMany
-    private List<Promotion> cart;
+//    @ManyToMany
+//    @JoinTable(
+//            name = "Cart",
+//            joinColumns = @JoinColumn(name = "userId"),
+//            inverseJoinColumns = @JoinColumn(name = "promotionId")
+//    )
+//    private List<Promotion> cart;
 
     public User() {
     }
@@ -59,13 +64,13 @@ public class User {
         this.role = role;
     }
 
-    public List<Promotion> getCart() {
-        return cart;
-    }
-
-    public void setCart(List<Promotion> cart) {
-        this.cart = cart;
-    }
+//    public List<Promotion> getCart() {
+//        return cart;
+//    }
+//
+//    public void setCart(List<Promotion> cart) {
+//        this.cart = cart;
+//    }
 
     @Override
     public String toString() {

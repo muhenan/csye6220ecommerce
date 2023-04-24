@@ -4,9 +4,13 @@ import com.henanmu.csye6220ecommerce.dao.CommodityDAO;
 import com.henanmu.csye6220ecommerce.dao.PromotionDAO;
 import com.henanmu.csye6220ecommerce.pojo.Commodity;
 import com.henanmu.csye6220ecommerce.pojo.Promotion;
+import com.henanmu.csye6220ecommerce.util.MessageModel;
+import com.henanmu.csye6220ecommerce.validator.PromotionValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,13 +24,24 @@ public class PromotionController {
     @Autowired
     CommodityDAO commodityDAO;
 
+    @Autowired
+    PromotionValidator promotionValidator;
+
     @PostMapping
-    public ResponseEntity createPromotion(@RequestBody Promotion promotion) {
+    public ResponseEntity createPromotion(@RequestBody Promotion promotion, BindingResult result) {
+        promotionValidator.validate(promotion, result);
+        if (result.hasErrors()) {
+            String errorMessage = result.getAllErrors().get(0).getDefaultMessage();
+            return ResponseEntity.badRequest().body(MessageModel.create(errorMessage));
+        }
         Commodity commodity = commodityDAO.readCommodityById(promotion.getCommodityId());
         if (commodity == null) {
-            return ResponseEntity.badRequest().body("Invalid commodity ID");
+            return ResponseEntity.badRequest().body(MessageModel.create("Invalid commodity ID"));
         }
         promotion.setCommodity(commodity);
+        promotion.setStatus(1);
+        promotion.setAvailableStock(promotion.getTotalStock());
+        promotion.setLockStock(0);
         promotionDAO.createPromotion(promotion);
         return ResponseEntity.ok(promotion);
     }

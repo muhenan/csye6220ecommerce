@@ -13,9 +13,11 @@
         <property name="show_sql">true</property>
         <property name="format_sql">true</property>
         <property name="hibernate.hbm2ddl.auto">update</property>
+        <property name="connection.isolation">2</property>
         <mapping class="com.henanmu.csye6220ecommerce.pojo.User"/>
         <mapping class="com.henanmu.csye6220ecommerce.pojo.Commodity"/>
         <mapping class="com.henanmu.csye6220ecommerce.pojo.Promotion"/>
         <mapping class="com.henanmu.csye6220ecommerce.pojo.Order"/>
+        <mapping class="com.henanmu.csye6220ecommerce.pojo.Cart"/>
     </session-factory>
 </hibernate-configuration>

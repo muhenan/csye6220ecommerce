@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Cart Page</title>
+  <link rel="stylesheet" type="text/css" href="css/cart.css">
+  <link rel="stylesheet" type="text/css" href="css/header.css">
+</head>
+<script>
+  window.onload = function () {
+    var uid = getCookie("user_id");
+    $.ajax({
+      type: 'GET',
+      url: 'http://localhost:8080/cart/id/' + uid + '?timestamp=' + Date.now(),
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8'
+      },
+      cache: false, // prevent caching
+      success: function (list) {
+        $.each(list, function (key, promotion) {
+          console.log(promotion);
+          $('.cart-container').append("<div class=\"product-card\" data-id='" + promotion.pid +"'><img src=\"" +
+          promotion.imageUrl + "\"><div class=\"product-details\"><h2>" +
+          promotion.promotionName + "</h2><p class=\"price\">$" + promotion.promotionalPrice +
+          "</p><p class=\"stock\">In Stock: " + promotion.availableStock + "</p></div>" +
+                  "<div class=\"product-actions-container\"><ul class=\"product-actions\">" +
+          "<li><a href=\"" + "promotion_item2.html?id=" + promotion.pid + "\">Details</a></li>" +
+          "<li><a href=\"#\" class='deleteLink'>Delete</a></li>");
+        })
+      },
+      error: function () {
+        alert("Get cart failed");
+      }
+    });
+
+
+    // Add a click event listener to the "Delete" links
+    $(document).on('click', '.deleteLink', function (event) {
+      event.preventDefault();
+
+      // Get the product ID from the data attribute
+      var productId = $(this).closest('.product-card').data('id');
+
+      var obj = {};
+      obj["userId"] = getCookie("user_id");
+      obj["promotionId"] = productId;
+      console.log(obj);
+      var jsonStr = JSON.stringify(obj);
+
+      $.ajax({
+        type: 'DELETE',
+        url: 'http://localhost:8080/cart',
+        data: jsonStr,
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        cache: false, // prevent caching
+        success: function () {
+          $('.product-card[data-id="' + productId + '"]').remove();
+          console.log("deleted an item");
+        },
+        error: function () {
+          alert("Delete failed");
+        }
+      });
+    });
+  }
+</script>
+<body>
+<header>
+  <ul>
+    <li><a href="login.html" id="account_action">Please login</a></li>
+    <li><a href="#" onclick="myOrder()">My Order</a></li>
+    <li><a href="#" onclick="myCart()">My Cart</a></li>
+    <li><a href="promotions.html">Menu</a></li>
+    <li><a href="#" onclick="addPromotion()">Add Promotion</a></li>
+    <li><a href="#" onclick="addCommodity()">Add Commodity</a></li>
+  </ul>
+</header>
+<main>
+  <h1>My Cart</h1>
+  <div class="cart-container">
+  </div>
+</main>
+<script src="js/util.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login Page</title>
+  <link rel="stylesheet" type="text/css" href="css/login.css">
+  <link rel="stylesheet" type="text/css" href="css/header.css">
+  <link rel="script" href="js/util.js">
+</head>
+<body>
+<header>
+  <ul>
+    <li><a href="login.html" id="account_action">Please login</a></li>
+    <li><a href="#" onclick="myOrder()">My Order</a></li>
+    <li><a href="#" onclick="myCart()">My Cart</a></li>
+    <li><a href="promotions.html">Menu</a></li>
+    <li><a href="#" onclick="addPromotion()">Add Promotion</a></li>
+    <li><a href="#" onclick="addCommodity()">Add Commodity</a></li>
+  </ul>
+</header>
+<main>
+  <h1>Login</h1>
+  <form name="loginForm" >
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username">
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password">
+    <input type="button" onclick="login()" value="Sign in" >
+    <input  type="button" onclick="signup()" value="Sign up" >
+    <input  type="button" onclick="updatePassword()" value="Update Password" >
+  </form>
+</main>
+
+
+<script src="js/util.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript">
+  function login() {
+    var username = document.loginForm.username.value;
+    var password = document.loginForm.password.value;
+
+    var jsonObj = {};
+    jsonObj["name"] = username;
+    jsonObj["password"] = password;
+
+    $.ajax({
+      type: 'POST',
+      url: 'http://localhost:8080/user/login',
+      data: JSON.stringify(jsonObj),
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8'
+      },
+      success: function (response) {
+        console.log(response);
+        alert("login! ");
+        setCookie("user_name", response.name);
+        setCookie("user_id", response.uid);
+        setCookie("user_role", response.role);
+        //refresh account status： longin
+        // setCookie("mark", response.headers.mark);
+        account_status();
+        window.open("promotions.html");
+        window.close();
+      },
+      error: function (data) {
+        console.log(data);
+        alert("error: " + data);
+      }
+    });
+    return false;
+  }
+
+  function signup() {
+    var username = document.loginForm.username.value;
+    var password = document.loginForm.password.value;
+
+    var jsonObj = {};
+    jsonObj["name"] = username;
+    jsonObj["password"] = password;
+
+    var jsonStr = JSON.stringify(jsonObj);
+
+    $.ajax({
+      type: 'POST',
+      url: 'http://localhost:8080/user',
+      data: jsonStr,
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8'
+      },
+      success: function (data) {
+        alert("signup! please login");
+        console.log(data);
+        // document.cookie="name="+data.result.user;
+        account_status();
+      },
+      error: function (data) {
+        console.log(data);
+        //alert("error: " + data.responseText);
+        alert("error: " + data);
+      }
+    });
+    return false;
+  }
+
+  function updatePassword() {
+    window.open("password2.html")
+  }
+</script>
+</body>
+</html>

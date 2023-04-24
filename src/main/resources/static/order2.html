@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Order Page</title>
+  <link rel="stylesheet" type="text/css" href="css/order.css">
+  <link rel="stylesheet" type="text/css" href="css/header.css">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <link rel="script" href="js/util.js">
+</head>
+<script type="text/javascript">
+  window.onload = function() {
+    var request = new Object();
+    request = GetRequest();
+    var orderNumber = request["orderNumber"];
+    console.log(orderNumber);
+    $.ajax({
+      type: 'GET',
+      url: 'http://localhost:8080/order/' + orderNumber,
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+        'mark': getCookie('mark')
+      },
+      success: function (data) {
+        console.log(data);
+        $('#orderNumber').html(data.oid);
+        var orderStatus = data.orderStatus;
+        if (orderStatus == -1) {
+          $('#orderStatus').html("Sold Out");
+        }
+        else if (orderStatus == 0) {$('#orderStatus').html("Created, waiting for paying");}
+        else if (orderStatus == 1) {
+          $('#orderStatus').html("Paid, waiting for delivering");
+        }
+        else if (orderStatus == 2) {
+          $('#orderStatus').html("Order is closed");
+        }
+
+        var promotionName = data.promotion.promotionName;
+        $('#promotionName').html(promotionName);
+
+        var createTime = data.createTime;
+        $('#createTime').html(createTime);
+
+        // var orderAmount = data.orderAmount;
+        $('#orderAmount').html("1");
+      },
+      error: function (data) {
+        alert("Order info is on the way~ Please refresh a moment");
+      }
+    });
+  };
+</script>
+<body>
+<header>
+  <ul>
+    <li><a href="login.html" id="account_action">Please login</a></li>
+    <li><a href="#" onclick="myOrder()">My Order</a></li>
+    <li><a href="#" onclick="myCart()">My Cart</a></li>
+    <li><a href="promotions.html">Menu</a></li>
+    <li><a href="#" onclick="addPromotion()">Add Promotion</a></li>
+    <li><a href="#" onclick="addCommodity()">Add Commodity</a></li>
+  </ul>
+</header>
+<main>
+  <h1>Order Details</h1>
+  <div class="order-container">
+    <div class="order-details">
+      <p>Order Number: <span id="orderNumber"></span></p>
+      <p>Order Status: <span id="orderStatus"></span></p>
+      <p>Promotion Name: <span id="promotionName"></span></p>
+      <p>Order Created Time: <span id="createTime"></span></p>
+    </div>
+    <ul class="order-actions">
+      <li><a onclick="pay()">Pay</a></li>
+      <script type="text/javascript">
+        function pay(){
+          // call pay function
+          $.ajax({
+            type: 'PUT',
+            url: 'http://localhost:8080/order/pay/' + document.getElementById('orderNumber').innerHTML,
+            headers: {
+              'Content-Type': 'application/json;charset=UTF-8',
+              'mark': getCookie('mark')
+            },
+            success: function (data) {
+              console.log(data);
+              $('#orderNumber').html(data.orderNumber);
+
+              var orderStatus = data.orderStatus;
+              if (orderStatus == -1) {$('#orderStatus').html("Sold Out");}
+              else if (orderStatus == 0) {$('#orderStatus').html("Created, waiting for paying");}
+              else if (orderStatus == 1) {
+                $('#orderStatus').html("Paid, waiting for delivering");
+                alert("Pay successfully!")
+              }
+              else if (orderStatus == 2) {
+                $('#orderStatus').html("Order is closed");
+                alert("Order time out, Pay failed");
+              }
+            },
+            error: function (xhr) {
+              var response = JSON.parse(xhr.responseText);
+              alert(response.message);
+            }
+          });
+        }
+      </script>
+      <li><a onclick="cancel()">Cancel</a></li>
+      <script type="text/javascript">
+        function cancel(){
+          // call pay function
+          $.ajax({
+            type: 'PUT',
+            url: 'http://localhost:8080/order/cancel/' + document.getElementById('orderNumber').innerHTML,
+            headers: {
+              'Content-Type': 'application/json;charset=UTF-8',
+              'mark': getCookie('mark')
+            },
+            success: function (data) {
+              console.log(data);
+              $('#orderNumber').html(data.orderNumber);
+
+              var orderStatus = data.orderStatus;
+              if (orderStatus == -1) {$('#orderStatus').html("Sold Out");}
+              else if (orderStatus == 0) {$('#orderStatus').html("Created, waiting for paying");}
+              else if (orderStatus == 1) {
+                $('#orderStatus').html("Paid, waiting for delivering");
+                alert("Pay successfully!")
+              }
+              else if (orderStatus == 2) {
+                $('#orderStatus').html("Order is closed");
+                alert("Order is closed");
+              }
+            },
+            error: function (xhr) {
+              var response = JSON.parse(xhr.responseText);
+              alert(response.message);
+            }
+          });
+        }
+      </script>
+    </ul>
+  </div>
+</main>
+<script src="js/util.js"></script>
+</body>
+</html>

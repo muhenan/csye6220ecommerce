@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Orders Page</title>
+  <link rel="stylesheet" type="text/css" href="css/my_orders.css">
+  <link rel="stylesheet" type="text/css" href="css/header.css">
+</head>
+<script type="text/javascript">
+  window.onload = function () {
+    var uid = getCookie("user_id");
+    $.ajax({
+      type: 'GET',
+      url: 'http://localhost:8080/order/uid/' + uid,
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8'
+      },
+      success: function (list) {
+        $.each(list, function (key, order) {
+          console.log(order);
+          var orderStatus = order.orderStatus;
+          var orderStatusString;
+          if (orderStatus == -1) {
+            orderStatusString = "Failed";
+          } else if (orderStatus == 0) {
+            orderStatusString = "Unpaid";
+          } else if (orderStatus == 1) {
+            orderStatusString = "Paid";
+          } else if (orderStatus == 2) {
+            orderStatusString = "Canceled";
+          }
+          $('.order-table-body').append("<tr class=\"order\"><td>" + order.promotion.promotionName +
+          "</td><td>" + order.createTime +
+                  "</td><td>" + orderStatusString +
+                  "</td><td>" + order.payTime +
+                  "<td><a href=\"" + "order2.html?orderNumber=" + order.oid + "\">Details</a></td></tr>");
+        })
+      }
+    });
+  }
+</script>
+<body>
+<header>
+  <ul>
+    <li><a href="login.html" id="account_action">Please login</a></li>
+    <li><a href="#" onclick="myOrder()">My Order</a></li>
+    <li><a href="#" onclick="myCart()">My Cart</a></li>
+    <li><a href="promotions.html">Menu</a></li>
+    <li><a href="#" onclick="addPromotion()">Add Promotion</a></li>
+    <li><a href="#" onclick="addCommodity()">Add Commodity</a></li>
+  </ul>
+</header>
+<main>
+  <h1>My Orders</h1>
+  <table class="orders-table">
+    <thead>
+    <tr>
+      <th>Promotion Name</th>
+      <th>Created Time</th>
+      <th>Order Status</th>
+      <th>Pay Time</th>
+      <th>Details</th>
+    </tr>
+    </thead>
+    <tbody class="order-table-body">
+    </tbody>
+  </table>
+</main>
+<script src="js/util.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+</body>
+</html>
