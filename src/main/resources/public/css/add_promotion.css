@@ -36,7 +36,7 @@ input[type="datetime-local"] {
 }
 
 button[type="button"] {
-    background-color: #000000;
+    background-color: forestgreen;
     color: white;
     border: none;
     border-radius: 4px;
